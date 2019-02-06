@@ -30,23 +30,22 @@
 //ALLA FINE ELIMINI TUTTO SB, LO RICREI FAI PARTIRE HOST880. E CANCELLI I RECORD E FAI PARTIRE LA MIGRATION. oppure fai le create table?
 //sopra le pagine ho scritto se e cosa potrebbe dare problemi
 
-
 //C'È UN PROBLEMA NEL RUOLO PADRE E FIGLIO. FIN CHE SI CLICCA SUI CHILD VA TUTTO BNE MA QUANDO VUOI ENTRARE NEL RUOLO PADRE MANCANO DEI COLLEGAMENTI.
 // aaaasircles -->>>>>>>>>>>>>>>>> nome del database sircles migrato
 
 //popolare la tabella streamversion
 package main
 
-import(
-	"fmt"
-	_ "github.com/lib/pq"
-	"time"
+import (
 	"database/sql"
+	"fmt"
+	"time"
+
+	_ "github.com/lib/pq"
 )
 
+func main() {
 
-func main(){
-	
 	var timeline map[int64]int64
 	timeline = make(map[int64]int64)
 
@@ -63,7 +62,6 @@ func main(){
 		fmt.Println(err)
 	}
 	defer dbsircles.Close()
-
 
 	//INFORMATION NEEDED FROM TIMELINE
 	rows, err := dbsorint.Query("SELECT sequencenumber, timestamp FROM timeline ")
@@ -133,8 +131,8 @@ func main(){
 	// //ROLEEVENT
 	// RoleEvent(dbsorint, dbsircles, timeline)
 
-	//TIMELINE AND AGGREGATEVERSION 
-	Timeline(dbsorint, dbsircles)
+	// //TIMELINE AND AGGREGATEVERSION
+	// Timeline(dbsorint, dbsircles)
 
 	//EVENT
 	Event(dbsorint, dbsircles)
@@ -144,6 +142,4 @@ func main(){
 
 }
 
-
 //go get -u github.com/lib/pq (per scaricare il pacchetto)
-
