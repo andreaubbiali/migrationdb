@@ -50,10 +50,12 @@ import (
 func main() {
 
 	var timeline map[int64]int64
+	var query string
+
 	timeline = make(map[int64]int64)
 
 	//connection to database sorint.
-	dbsorint, err := sql.Open("postgres", "postgres://sircles:password@localhost/sorint?sslmode=disable")
+	dbsorint, err := sql.Open("postgres", "postgres://postgres:password@localhost/sorint?sslmode=disable")
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -86,10 +88,12 @@ func main() {
 
 	/* ----- CREATE TABLE ----- */
 
+	fmt.Println("CREATE TABLE")
+
 	file, err := ioutil.ReadFile("./tables.sql")
 
 	if err != nil {
-		fmt.Println("Cannot create table")
+		fmt.Println("Errors create table")
 	}
 
 	requests := strings.Split(string(file), ";")
@@ -98,7 +102,29 @@ func main() {
 		dbsircles.Exec(request)
 	}
 
-	/* ----- END CREATE TABLE ----- */
+	fmt.Println("CREATE TABLE DONE")
+
+	/* ----- MIGRATION_READDB AND MIGRATION_EVENTSTORE */
+
+	fmt.Println("MIGRATION TABLE")
+
+	query = `INSERT INTO migration_readdb (version, time) VALUES ('1', current_timestamp)`
+
+	_, err = dbsircles.Exec(query)
+
+	if err != nil {
+		fmt.Println("Error insert migration_readdb")
+	}
+
+	query = `INSERT INTO migration_eventstore (version, time) VALUES ('1', current_timestamp)`
+
+	_, err = dbsircles.Exec(query)
+
+	if err != nil {
+		fmt.Println("Error insert migration_eventstore")
+	}
+
+	fmt.Println("MIGRATION TABLE DONE")
 
 	//every time I do a query of INSERT INTO i must use also a scan and returning something because without it the code after some loop broke.
 
