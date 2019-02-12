@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"log"
 	"strconv"
 
 	_ "github.com/lib/pq"
@@ -118,9 +119,10 @@ func Event(dbsorint, dbsircles *sql.DB) {
 	// remove last ','
 	query = query[:len(query)-1]
 	// execute query
-	_, err = dbsircles.Exec(query, values)
+	_, err = dbsircles.Exec(query, values...)
 	if err != nil {
-		println("Error query")
+		log.Println("Query error")
+		log.Println(err)
 	}
 	fmt.Println("MIGRATION OF TABLE EVENT DONE")
 }

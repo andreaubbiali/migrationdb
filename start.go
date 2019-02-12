@@ -180,10 +180,10 @@ func main() {
 	//ROLEEVENT
 	RoleEvent(dbsorint, dbsircles, timeline)
 
-	// //TIMELINE AND AGGREGATEVERSION
+	//TIMELINE AND AGGREGATEVERSION
 	Timeline(dbsorint, dbsircles)
 
-	// //EVENT
+	//EVENT
 	Event(dbsorint, dbsircles)
 
 	// //TRY
