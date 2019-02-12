@@ -2,13 +2,16 @@
 
 package main
 
-import(
+import (
 	"database/sql"
 	"fmt"
+	"log"
+	"strconv"
+
 	_ "github.com/lib/pq"
 )
 
-func Role(dbsorint, dbsircles *sql.DB, timeline map[int64]int64){
+func Role(dbsorint, dbsircles *sql.DB, timeline map[int64]int64) {
 	fmt.Println("MIGRATION OF TABLE ROLE")
 
 	rows, err := dbsorint.Query("SELECT id, start_tl, end_tl, roletype, depth, name, purpose FROM role")
@@ -25,40 +28,58 @@ func Role(dbsorint, dbsircles *sql.DB, timeline map[int64]int64){
 	var name string
 	var purpose string
 
+	query := `INSERT INTO role (id, start_tl, end_tl, roletype, depth, name, purpose) VALUES `
+
+	values := []interface{}{}
+	numFields := 7 // the number of fields you are inserting
+	rowsCounts := 0
+
 	for rows.Next() {
 		err = rows.Scan(&id, &start_tl, &end_tl, &roletype, &depth, &name, &purpose)
 		if err != nil {
-				fmt.Println(err)
+			fmt.Println(err)
+		}
+
+		for sequence, time := range timeline {
+			if sequence == start_tl {
+				start_tl = time
 			}
-	
-			for sequence, time := range timeline{
-				if sequence == start_tl{
-					start_tl = time
+		}
+
+		// count value to insert
+		n := rowsCounts * numFields
+		rowsCounts++
+
+		// values insert
+		query += `(`
+		for j := 0; j < numFields; j++ {
+			query += `$` + strconv.Itoa(n+j+1) + `,`
+		}
+		// remove last ','
+		query = query[:len(query)-1] + `),`
+
+		if end_tl.Valid {
+
+			for sequence, time := range timeline {
+				if sequence == end_tl.Int64 {
+					end_tl.Int64 = time
 				}
 			}
-	
-			if end_tl.Valid {
-				
-				for sequence, time := range timeline{
-					if sequence == end_tl.Int64{
-						end_tl.Int64 = time
-					}
-				}
-				sqlStatement := `
-					INSERT INTO role (id, start_tl, end_tl, roletype, depth, name, purpose)
-					VALUES ($1, $2, $3, $4, $5, $6, $7)
-					RETURNING id`
 
-					err = dbsircles.QueryRow(sqlStatement, id, start_tl, end_tl.Int64, roletype, depth, name, purpose).Scan(&id)
+			values = append(values, id, start_tl, end_tl.Int64, roletype, depth, name, purpose)
 
-			} else{
-					sqlStatement := `
-					INSERT INTO role (id, start_tl, roletype, depth, name, purpose)
-					VALUES ($1, $2, $3, $4, $5, $6)
-					RETURNING id`
-
-					err = dbsircles.QueryRow(sqlStatement, id, start_tl, roletype, depth, name, purpose).Scan(&id)
-			}
+		} else {
+			// append values to query
+			values = append(values, id, start_tl, nil, roletype, depth, name, purpose)
+		}
 	}
-	fmt.Println("MIGRATION OF TABLE MEMBERTENSION DONE")
+	// remove last ','
+	query = query[:len(query)-1]
+	// execute query
+	_, err = dbsircles.Exec(query, values...)
+	if err != nil {
+		log.Println("Query error")
+		log.Println(err)
+	}
+	fmt.Println("MIGRATION OF TABLE ROLE DONE")
 }

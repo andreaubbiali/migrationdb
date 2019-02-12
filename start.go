@@ -104,9 +104,11 @@ func main() {
 
 	fmt.Println("CREATE TABLE DONE")
 
-	/* ----- MIGRATION_READDB AND MIGRATION_EVENTSTORE */
+	/* ----- MIGRATION_READDB AND MIGRATION_EVENTSTORE ----- */
 
 	fmt.Println("MIGRATION TABLE")
+
+	// insert current timestamp in migration readdb
 
 	query = `INSERT INTO migration_readdb (version, time) VALUES ('1', current_timestamp)`
 
@@ -115,6 +117,8 @@ func main() {
 	if err != nil {
 		fmt.Println("Error insert migration_readdb")
 	}
+
+	// insert current timestamp in migration_eventstore
 
 	query = `INSERT INTO migration_eventstore (version, time) VALUES ('1', current_timestamp)`
 
@@ -177,10 +181,10 @@ func main() {
 	RoleEvent(dbsorint, dbsircles, timeline)
 
 	// //TIMELINE AND AGGREGATEVERSION
-	// Timeline(dbsorint, dbsircles)
+	Timeline(dbsorint, dbsircles)
 
 	// //EVENT
-	// Event(dbsorint, dbsircles)
+	Event(dbsorint, dbsircles)
 
 	// //TRY
 	// Try(dbsorint, dbsircles)

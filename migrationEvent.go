@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"strconv"
 
 	_ "github.com/lib/pq"
 )
@@ -32,6 +33,12 @@ func Event(dbsorint, dbsircles *sql.DB) {
 	var timestamp string
 	var version int
 	var data []byte
+
+	query := `INSERT INTO event (id, sequencenumber, eventtype, category, streamid, timestamp, version, data, metadata) values`
+
+	values := []interface{}{}
+	numFields := 9 // the number of fields you are inserting
+	rowsCounts := 0
 
 	for rows.Next() {
 		err = rows.Scan(&id, &sequencenumber, &eventtype, &aggregatetype, &aggregateid, &timestamp, &version, &meta.Correlationid, &meta.CausationID, &data)
@@ -93,12 +100,27 @@ func Event(dbsorint, dbsircles *sql.DB) {
 
 		marshalmetadata, _ := json.Marshal(groupMetadata)
 
-		sqlStatement = `
-					INSERT INTO event (id, sequencenumber, eventtype, category, streamid, timestamp, version, data, metadata)
-					VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-					RETURNING id`
+		// count value to insert
+		n := rowsCounts * numFields
+		rowsCounts++
 
-		err = dbsircles.QueryRow(sqlStatement, id, sequencenumber, eventtype, aggregatetype, aggregateid, timestamp, version, data, marshalmetadata).Scan(&id)
+		// values insert
+		query += `(`
+		for j := 0; j < numFields; j++ {
+			query += `$` + strconv.Itoa(n+j+1) + `,`
+		}
+		// remove last ','
+		query = query[:len(query)-1] + `),`
+
+		// append values to query
+		values = append(values, id, sequencenumber, eventtype, aggregatetype, aggregateid, timestamp, version, data, marshalmetadata)
+	}
+	// remove last ','
+	query = query[:len(query)-1]
+	// execute query
+	_, err = dbsircles.Exec(query, values)
+	if err != nil {
+		println("Error query")
 	}
 	fmt.Println("MIGRATION OF TABLE EVENT DONE")
 }
