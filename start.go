@@ -39,6 +39,8 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"io/ioutil"
+	"strings"
 	"time"
 
 	_ "github.com/lib/pq"
@@ -81,64 +83,80 @@ func main() {
 		timeline[sequencenumber] = timestamp.UnixNano()
 	}
 
+	/* ----- CREATE TABLE ----- */
+	file, err := ioutil.ReadFile("./tables.sql")
+
+	if err != nil {
+		// handle error
+	}
+
+	requests := strings.Split(string(file), ";")
+
+	for _, request := range requests {
+		dbsircles.Exec(request)
+		// do whatever you need with result and error
+	}
+
+	/* ----- END CREATE TABLE ----- */
+
 	//every time I do a query of INSERT INTO i must use also a scan and returning something because without it the code after some loop broke.
 
-	// //ACCOUNTABILITY
-	// Accountability(dbsorint, dbsircles, timeline)
+	//ACCOUNTABILITY
+	Accountability(dbsorint, dbsircles, timeline)
 
-	// //DOMAIN
-	// Domain(dbsorint, dbsircles, timeline)
+	//DOMAIN
+	Domain(dbsorint, dbsircles, timeline)
 
-	// //EVENTSTATE
-	// EventState(dbsorint, dbsircles)
+	//EVENTSTATE
+	EventState(dbsorint, dbsircles)
 
-	// //MEMBER
-	// Member(dbsorint, dbsircles, timeline)
+	//MEMBER
+	Member(dbsorint, dbsircles, timeline)
 
-	// //MEMBERAVATAR
-	// MemberAvatar(dbsorint, dbsircles, timeline)
+	//MEMBERAVATAR
+	MemberAvatar(dbsorint, dbsircles, timeline)
 
-	// //MEMBERTENSION
-	// MemberTension(dbsorint, dbsircles, timeline)
+	//MEMBERTENSION
+	MemberTension(dbsorint, dbsircles, timeline)
 
-	// //PASSWORD
-	// Password(dbsorint, dbsircles)
+	//PASSWORD
+	Password(dbsorint, dbsircles)
 
-	// //ROLE
-	// Role(dbsorint, dbsircles, timeline)
+	//ROLE
+	Role(dbsorint, dbsircles, timeline)
 
-	// //ROLEACCOUNTABILITY
-	// RoleAccountability(dbsorint, dbsircles, timeline)
+	//ROLEACCOUNTABILITY
+	RoleAccountability(dbsorint, dbsircles, timeline)
 
-	// //ROLEADDITIONALCONTENT
-	// RoleAdditionalContent(dbsorint, dbsircles, timeline)
+	//ROLEADDITIONALCONTENT
+	RoleAdditionalContent(dbsorint, dbsircles, timeline)
 
-	// //ROLEDOMAIN
-	// RoleDomain(dbsorint, dbsircles, timeline)
+	//ROLEDOMAIN
+	RoleDomain(dbsorint, dbsircles, timeline)
 
-	// //ROLEMEMBER
-	// RoleMember(dbsorint, dbsircles, timeline)
+	//ROLEMEMBER
+	RoleMember(dbsorint, dbsircles, timeline)
 
-	// //ROLEROLE
-	// RoleRole(dbsorint, dbsircles, timeline)
+	//ROLEROLE
+	RoleRole(dbsorint, dbsircles, timeline)
 
-	// //ROLETENSION
-	// RoleTension(dbsorint, dbsircles, timeline)
+	//ROLETENSION
+	RoleTension(dbsorint, dbsircles, timeline)
 
-	// //TENSION
-	// Tension(dbsorint, dbsircles, timeline)
+	//TENSION
+	Tension(dbsorint, dbsircles, timeline)
 
-	// //ROLEEVENT
-	// RoleEvent(dbsorint, dbsircles, timeline)
+	//ROLEEVENT
+	RoleEvent(dbsorint, dbsircles, timeline)
 
-	// //TIMELINE AND AGGREGATEVERSION
-	// Timeline(dbsorint, dbsircles)
+	//TIMELINE AND AGGREGATEVERSION
+	Timeline(dbsorint, dbsircles)
 
 	//EVENT
 	Event(dbsorint, dbsircles)
 
-	// //TRY
-	// Try(dbsorint, dbsircles)
+	//TRY
+	Try(dbsorint, dbsircles)
 
 }
 
