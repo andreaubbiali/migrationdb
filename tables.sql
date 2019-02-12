@@ -2,7 +2,7 @@
 
 -- DROP TABLE public.accountability
 
-CREATE TABLE public.accountability (
+CREATE TABLE IF NOT EXISTS public.accountability (
 	id uuid NOT NULL,
 	start_tl int8 NOT NULL,
 	end_tl int8 NULL,
@@ -16,7 +16,7 @@ CREATE UNIQUE INDEX roleadditionalcontent_tl ON public.accountability USING btre
 
 -- DROP TABLE public.circledirectmember
 
-CREATE TABLE public.circledirectmember (
+CREATE TABLE IF NOT EXISTS public.circledirectmember (
 	start_tl int8 NULL,
 	end_tl int8 NULL,
 	x uuid NULL,
@@ -29,7 +29,7 @@ CREATE INDEX circledirectmember_y_start_tl ON public.circledirectmember USING bt
 
 -- DROP TABLE public.commandevent
 
-CREATE TABLE public.commandevent (
+CREATE TABLE IF NOT EXISTS public.commandevent (
 	timeline int8 NULL,
 	id uuid NULL,
 	issuer uuid NULL,
@@ -41,7 +41,7 @@ CREATE TABLE public.commandevent (
 
 -- DROP TABLE public."domain"
 
-CREATE TABLE public."domain" (
+CREATE TABLE IF NOT EXISTS public."domain" (
 	id uuid NOT NULL,
 	start_tl int8 NOT NULL,
 	end_tl int8 NULL,
@@ -54,7 +54,7 @@ CREATE UNIQUE INDEX domain_tl ON public.domain USING btree (id, start_tl, end_tl
 
 -- DROP TABLE public."event"
 
-CREATE TABLE public."event" (
+CREATE TABLE IF NOT EXISTS public."event" (
 	id uuid NOT NULL,
 	sequencenumber bigserial NOT NULL,
 	eventtype varchar NOT NULL,
@@ -74,7 +74,7 @@ CREATE INDEX event_streamid ON public.event USING btree (streamid, version);
 
 -- DROP TABLE public."member"
 
-CREATE TABLE public."member" (
+CREATE TABLE IF NOT EXISTS public."member" (
 	id uuid NOT NULL,
 	start_tl int8 NOT NULL,
 	end_tl int8 NULL,
@@ -90,7 +90,7 @@ CREATE UNIQUE INDEX member_tl ON public.member USING btree (id, start_tl, end_tl
 
 -- DROP TABLE public.memberavatar
 
-CREATE TABLE public.memberavatar (
+CREATE TABLE IF NOT EXISTS public.memberavatar (
 	id uuid NOT NULL,
 	start_tl int8 NOT NULL,
 	end_tl int8 NULL,
@@ -103,7 +103,7 @@ CREATE UNIQUE INDEX memberavatar_tl ON public.memberavatar USING btree (id, star
 
 -- DROP TABLE public.memberevent
 
-CREATE TABLE public.memberevent (
+CREATE TABLE IF NOT EXISTS public.memberevent (
 	timeline int8 NULL,
 	id uuid NULL,
 	command uuid NULL,
@@ -117,7 +117,7 @@ CREATE TABLE public.memberevent (
 
 -- DROP TABLE public.membermatch
 
-CREATE TABLE public.membermatch (
+CREATE TABLE IF NOT EXISTS public.membermatch (
 	memberid uuid NULL,
 	matchuid varchar NULL
 );
@@ -126,7 +126,7 @@ CREATE TABLE public.membermatch (
 
 -- DROP TABLE public.membertension
 
-CREATE TABLE public.membertension (
+CREATE TABLE IF NOT EXISTS public.membertension (
 	start_tl int8 NULL,
 	end_tl int8 NULL,
 	x uuid NULL,
@@ -139,7 +139,7 @@ CREATE INDEX membertension_y_start_tl ON public.membertension USING btree (y, st
 
 -- DROP TABLE public.migration_eventstore
 
-CREATE TABLE public.migration_eventstore (
+CREATE TABLE IF NOT EXISTS public.migration_eventstore (
 	"version" int4 NOT NULL,
 	"time" timestamptz NOT NULL
 );
@@ -148,7 +148,7 @@ CREATE TABLE public.migration_eventstore (
 
 -- DROP TABLE public.migration_readdb
 
-CREATE TABLE public.migration_readdb (
+CREATE TABLE IF NOT EXISTS public.migration_readdb (
 	"version" int4 NOT NULL,
 	"time" timestamptz NOT NULL
 );
@@ -157,7 +157,7 @@ CREATE TABLE public.migration_readdb (
 
 -- DROP TABLE public."password"
 
-CREATE TABLE public."password" (
+CREATE TABLE IF NOT EXISTS public."password" (
 	memberid uuid NULL,
 	"password" varchar NULL
 );
@@ -166,7 +166,7 @@ CREATE TABLE public."password" (
 
 -- DROP TABLE public."role"
 
-CREATE TABLE public."role" (
+CREATE TABLE IF NOT EXISTS public."role" (
 	id uuid NOT NULL,
 	start_tl int8 NOT NULL,
 	end_tl int8 NULL,
@@ -182,7 +182,7 @@ CREATE UNIQUE INDEX role_tl ON public.role USING btree (id, start_tl, end_tl DES
 
 -- DROP TABLE public.roleaccountability
 
-CREATE TABLE public.roleaccountability (
+CREATE TABLE IF NOT EXISTS public.roleaccountability (
 	start_tl int8 NULL,
 	end_tl int8 NULL,
 	x uuid NULL,
@@ -195,7 +195,7 @@ CREATE INDEX roleaccountability_y_start_tl ON public.roleaccountability USING bt
 
 -- DROP TABLE public.roleadditionalcontent
 
-CREATE TABLE public.roleadditionalcontent (
+CREATE TABLE IF NOT EXISTS public.roleadditionalcontent (
 	id uuid NOT NULL,
 	start_tl int8 NOT NULL,
 	end_tl int8 NULL,
@@ -207,7 +207,7 @@ CREATE TABLE public.roleadditionalcontent (
 
 -- DROP TABLE public.roledomain
 
-CREATE TABLE public.roledomain (
+CREATE TABLE IF NOT EXISTS public.roledomain (
 	start_tl int8 NULL,
 	end_tl int8 NULL,
 	x uuid NULL,
@@ -220,7 +220,7 @@ CREATE INDEX roledomain_y_start_tl ON public.roledomain USING btree (y, start_tl
 
 -- DROP TABLE public.roleevent
 
-CREATE TABLE public.roleevent (
+CREATE TABLE IF NOT EXISTS public.roleevent (
 	timeline int8 NULL,
 	id uuid NULL,
 	command uuid NULL,
@@ -234,7 +234,7 @@ CREATE TABLE public.roleevent (
 
 -- DROP TABLE public.rolemember
 
-CREATE TABLE public.rolemember (
+CREATE TABLE IF NOT EXISTS public.rolemember (
 	start_tl int8 NULL,
 	end_tl int8 NULL,
 	x uuid NULL,
@@ -250,7 +250,7 @@ CREATE INDEX rolemember_y_start_tl ON public.rolemember USING btree (y, start_tl
 
 -- DROP TABLE public.rolerole
 
-CREATE TABLE public.rolerole (
+CREATE TABLE IF NOT EXISTS public.rolerole (
 	start_tl int8 NULL,
 	end_tl int8 NULL,
 	x uuid NULL,
@@ -263,7 +263,7 @@ CREATE INDEX rolerole_y_start_tl ON public.rolerole USING btree (y, start_tl, en
 
 -- DROP TABLE public.roletension
 
-CREATE TABLE public.roletension (
+CREATE TABLE IF NOT EXISTS public.roletension (
 	start_tl int8 NULL,
 	end_tl int8 NULL,
 	x uuid NULL,
@@ -276,7 +276,7 @@ CREATE INDEX roletension_y_start_tl ON public.roletension USING btree (y, start_
 
 -- DROP TABLE public.sequencenumber
 
-CREATE TABLE public.sequencenumber (
+CREATE TABLE IF NOT EXISTS public.sequencenumber (
 	sequencenumber int8 NOT NULL,
 	CONSTRAINT sequencenumber_pkey PRIMARY KEY (sequencenumber)
 );
@@ -285,7 +285,7 @@ CREATE TABLE public.sequencenumber (
 
 -- DROP TABLE public.streamversion
 
-CREATE TABLE public.streamversion (
+CREATE TABLE IF NOT EXISTS public.streamversion (
 	streamid varchar NOT NULL,
 	category varchar NOT NULL,
 	"version" int8 NOT NULL,
@@ -296,7 +296,7 @@ CREATE TABLE public.streamversion (
 
 -- DROP TABLE public.tension
 
-CREATE TABLE public.tension (
+CREATE TABLE IF NOT EXISTS public.tension (
 	id uuid NOT NULL,
 	start_tl int8 NOT NULL,
 	end_tl int8 NULL,
@@ -312,7 +312,7 @@ CREATE UNIQUE INDEX tension_tl ON public.tension USING btree (id, start_tl, end_
 
 -- DROP TABLE public.timeline
 
-CREATE TABLE public.timeline (
+CREATE TABLE IF NOT EXISTS public.timeline (
 	"timestamp" timestamptz NOT NULL,
 	groupid uuid NOT NULL,
 	aggregatetype varchar NOT NULL,
