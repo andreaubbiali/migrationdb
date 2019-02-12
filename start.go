@@ -31,7 +31,8 @@
 //sopra le pagine ho scritto se e cosa potrebbe dare problemi
 
 //C'È UN PROBLEMA NEL RUOLO PADRE E FIGLIO. FIN CHE SI CLICCA SUI CHILD VA TUTTO BNE MA QUANDO VUOI ENTRARE NEL RUOLO PADRE MANCANO DEI COLLEGAMENTI.
-// aaaasircles -->>>>>>>>>>>>>>>>> nome del database sircles migrato
+
+//sircles -> nome del database sircles migrato
 
 //popolare la tabella streamversion
 package main
@@ -59,7 +60,7 @@ func main() {
 	defer dbsorint.Close()
 
 	//connection to database sircles.
-	dbsircles, err := sql.Open("postgres", "postgres://postgres:password@localhost/sircles?sslmode=disable")
+	dbsircles, err := sql.Open("postgres", "postgres://sircles:password@localhost/sircles?sslmode=disable")
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -84,17 +85,17 @@ func main() {
 	}
 
 	/* ----- CREATE TABLE ----- */
+
 	file, err := ioutil.ReadFile("./tables.sql")
 
 	if err != nil {
-		// handle error
+		fmt.Println("Cannot create table")
 	}
 
 	requests := strings.Split(string(file), ";")
 
 	for _, request := range requests {
 		dbsircles.Exec(request)
-		// do whatever you need with result and error
 	}
 
 	/* ----- END CREATE TABLE ----- */
@@ -149,14 +150,14 @@ func main() {
 	//ROLEEVENT
 	RoleEvent(dbsorint, dbsircles, timeline)
 
-	//TIMELINE AND AGGREGATEVERSION
-	Timeline(dbsorint, dbsircles)
+	// //TIMELINE AND AGGREGATEVERSION
+	// Timeline(dbsorint, dbsircles)
 
-	//EVENT
-	Event(dbsorint, dbsircles)
+	// //EVENT
+	// Event(dbsorint, dbsircles)
 
-	//TRY
-	Try(dbsorint, dbsircles)
+	// //TRY
+	// Try(dbsorint, dbsircles)
 
 }
 

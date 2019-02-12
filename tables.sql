@@ -1,8 +1,8 @@
--- Drop table
+-- accountability
 
--- DROP TABLE public.accountability
+DROP TABLE public.accountability;
 
-CREATE TABLE IF NOT EXISTS public.accountability (
+CREATE TABLE public.accountability (
 	id uuid NOT NULL,
 	start_tl int8 NOT NULL,
 	end_tl int8 NULL,
@@ -12,11 +12,11 @@ CREATE TABLE IF NOT EXISTS public.accountability (
 CREATE UNIQUE INDEX accountability_tl ON public.accountability USING btree (id, start_tl, end_tl DESC);
 CREATE UNIQUE INDEX roleadditionalcontent_tl ON public.accountability USING btree (id, start_tl, end_tl DESC);
 
--- Drop table
+-- circledirectmember
 
--- DROP TABLE public.circledirectmember
+DROP TABLE public.circledirectmember;
 
-CREATE TABLE IF NOT EXISTS public.circledirectmember (
+CREATE TABLE public.circledirectmember (
 	start_tl int8 NULL,
 	end_tl int8 NULL,
 	x uuid NULL,
@@ -25,9 +25,9 @@ CREATE TABLE IF NOT EXISTS public.circledirectmember (
 CREATE INDEX circledirectmember_x_start_tl ON public.circledirectmember USING btree (x, start_tl, end_tl DESC);
 CREATE INDEX circledirectmember_y_start_tl ON public.circledirectmember USING btree (y, start_tl, end_tl DESC);
 
--- Drop table
+-- commandevent
 
--- DROP TABLE public.commandevent
+DROP TABLE public.commandevent;
 
 CREATE TABLE IF NOT EXISTS public.commandevent (
 	timeline int8 NULL,
@@ -37,9 +37,9 @@ CREATE TABLE IF NOT EXISTS public.commandevent (
 	"data" bytea NULL
 );
 
--- Drop table
+-- domain
 
--- DROP TABLE public."domain"
+DROP TABLE public."domain";
 
 CREATE TABLE IF NOT EXISTS public."domain" (
 	id uuid NOT NULL,
@@ -50,9 +50,9 @@ CREATE TABLE IF NOT EXISTS public."domain" (
 );
 CREATE UNIQUE INDEX domain_tl ON public.domain USING btree (id, start_tl, end_tl DESC);
 
--- Drop table
+-- event
 
--- DROP TABLE public."event"
+DROP TABLE public."event";
 
 CREATE TABLE IF NOT EXISTS public."event" (
 	id uuid NOT NULL,
@@ -70,9 +70,9 @@ CREATE TABLE IF NOT EXISTS public."event" (
 CREATE INDEX event_category ON public.event USING btree (category);
 CREATE INDEX event_streamid ON public.event USING btree (streamid, version);
 
--- Drop table
+-- member
 
--- DROP TABLE public."member"
+DROP TABLE public."member";
 
 CREATE TABLE IF NOT EXISTS public."member" (
 	id uuid NOT NULL,
@@ -86,9 +86,9 @@ CREATE TABLE IF NOT EXISTS public."member" (
 );
 CREATE UNIQUE INDEX member_tl ON public.member USING btree (id, start_tl, end_tl DESC);
 
--- Drop table
+-- memberavatar
 
--- DROP TABLE public.memberavatar
+DROP TABLE public.memberavatar;
 
 CREATE TABLE IF NOT EXISTS public.memberavatar (
 	id uuid NOT NULL,
@@ -99,9 +99,9 @@ CREATE TABLE IF NOT EXISTS public.memberavatar (
 );
 CREATE UNIQUE INDEX memberavatar_tl ON public.memberavatar USING btree (id, start_tl, end_tl DESC);
 
--- Drop table
+-- memberavatar
 
--- DROP TABLE public.memberevent
+DROP TABLE public.memberevent;
 
 CREATE TABLE IF NOT EXISTS public.memberevent (
 	timeline int8 NULL,
@@ -113,18 +113,18 @@ CREATE TABLE IF NOT EXISTS public.memberevent (
 	"data" bytea NULL
 );
 
--- Drop table
+-- membermatch
 
--- DROP TABLE public.membermatch
+DROP TABLE public.membermatch;
 
 CREATE TABLE IF NOT EXISTS public.membermatch (
 	memberid uuid NULL,
 	matchuid varchar NULL
 );
 
--- Drop table
+-- membertension
 
--- DROP TABLE public.membertension
+DROP TABLE public.membertension;
 
 CREATE TABLE IF NOT EXISTS public.membertension (
 	start_tl int8 NULL,
@@ -135,36 +135,36 @@ CREATE TABLE IF NOT EXISTS public.membertension (
 CREATE INDEX membertension_x_start_tl ON public.membertension USING btree (x, start_tl, end_tl DESC);
 CREATE INDEX membertension_y_start_tl ON public.membertension USING btree (y, start_tl, end_tl DESC);
 
--- Drop table
+-- migration_eventstore
 
--- DROP TABLE public.migration_eventstore
+DROP TABLE public.migration_eventstore;
 
 CREATE TABLE IF NOT EXISTS public.migration_eventstore (
 	"version" int4 NOT NULL,
 	"time" timestamptz NOT NULL
 );
 
--- Drop table
+-- migration_readdb
 
--- DROP TABLE public.migration_readdb
+DROP TABLE public.migration_readdb;
 
 CREATE TABLE IF NOT EXISTS public.migration_readdb (
 	"version" int4 NOT NULL,
 	"time" timestamptz NOT NULL
 );
 
--- Drop table
+-- password
 
--- DROP TABLE public."password"
+DROP TABLE public."password";
 
 CREATE TABLE IF NOT EXISTS public."password" (
 	memberid uuid NULL,
 	"password" varchar NULL
 );
 
--- Drop table
+-- role
 
--- DROP TABLE public."role"
+DROP TABLE public."role";
 
 CREATE TABLE IF NOT EXISTS public."role" (
 	id uuid NOT NULL,
@@ -178,9 +178,9 @@ CREATE TABLE IF NOT EXISTS public."role" (
 );
 CREATE UNIQUE INDEX role_tl ON public.role USING btree (id, start_tl, end_tl DESC);
 
--- Drop table
+-- roleaccountability
 
--- DROP TABLE public.roleaccountability
+DROP TABLE public.roleaccountability;
 
 CREATE TABLE IF NOT EXISTS public.roleaccountability (
 	start_tl int8 NULL,
@@ -191,9 +191,9 @@ CREATE TABLE IF NOT EXISTS public.roleaccountability (
 CREATE INDEX roleaccountability_x_start_tl ON public.roleaccountability USING btree (x, start_tl, end_tl DESC);
 CREATE INDEX roleaccountability_y_start_tl ON public.roleaccountability USING btree (y, start_tl, end_tl DESC);
 
--- Drop table
+-- roleadditionalcontent
 
--- DROP TABLE public.roleadditionalcontent
+DROP TABLE public.roleadditionalcontent;
 
 CREATE TABLE IF NOT EXISTS public.roleadditionalcontent (
 	id uuid NOT NULL,
@@ -203,9 +203,9 @@ CREATE TABLE IF NOT EXISTS public.roleadditionalcontent (
 	CONSTRAINT roleadditionalcontent_pkey PRIMARY KEY (id, start_tl)
 );
 
--- Drop table
+-- roledomain
 
--- DROP TABLE public.roledomain
+DROP TABLE public.roledomain;
 
 CREATE TABLE IF NOT EXISTS public.roledomain (
 	start_tl int8 NULL,
@@ -216,9 +216,9 @@ CREATE TABLE IF NOT EXISTS public.roledomain (
 CREATE INDEX roledomain_x_start_tl ON public.roledomain USING btree (x, start_tl, end_tl DESC);
 CREATE INDEX roledomain_y_start_tl ON public.roledomain USING btree (y, start_tl, end_tl DESC);
 
--- Drop table
+-- roleevent
 
--- DROP TABLE public.roleevent
+DROP TABLE public.roleevent;
 
 CREATE TABLE IF NOT EXISTS public.roleevent (
 	timeline int8 NULL,
@@ -230,9 +230,9 @@ CREATE TABLE IF NOT EXISTS public.roleevent (
 	"data" bytea NULL
 );
 
--- Drop table
+-- rolemember
 
--- DROP TABLE public.rolemember
+DROP TABLE public.rolemember;
 
 CREATE TABLE IF NOT EXISTS public.rolemember (
 	start_tl int8 NULL,
@@ -246,9 +246,9 @@ CREATE TABLE IF NOT EXISTS public.rolemember (
 CREATE INDEX rolemember_x_start_tl ON public.rolemember USING btree (x, start_tl, end_tl DESC);
 CREATE INDEX rolemember_y_start_tl ON public.rolemember USING btree (y, start_tl, end_tl DESC);
 
--- Drop table
+-- rolerole
 
--- DROP TABLE public.rolerole
+DROP TABLE public.rolerole;
 
 CREATE TABLE IF NOT EXISTS public.rolerole (
 	start_tl int8 NULL,
@@ -259,9 +259,9 @@ CREATE TABLE IF NOT EXISTS public.rolerole (
 CREATE INDEX rolerole_x_start_tl ON public.rolerole USING btree (x, start_tl, end_tl DESC);
 CREATE INDEX rolerole_y_start_tl ON public.rolerole USING btree (y, start_tl, end_tl DESC);
 
--- Drop table
+-- roletension
 
--- DROP TABLE public.roletension
+DROP TABLE public.roletension;
 
 CREATE TABLE IF NOT EXISTS public.roletension (
 	start_tl int8 NULL,
@@ -272,18 +272,18 @@ CREATE TABLE IF NOT EXISTS public.roletension (
 CREATE INDEX roletension_x_start_tl ON public.roletension USING btree (x, start_tl, end_tl DESC);
 CREATE INDEX roletension_y_start_tl ON public.roletension USING btree (y, start_tl, end_tl DESC);
 
--- Drop table
+-- sequencenumber
 
--- DROP TABLE public.sequencenumber
+DROP TABLE public.sequencenumber;
 
 CREATE TABLE IF NOT EXISTS public.sequencenumber (
 	sequencenumber int8 NOT NULL,
 	CONSTRAINT sequencenumber_pkey PRIMARY KEY (sequencenumber)
 );
 
--- Drop table
+-- streamversion
 
--- DROP TABLE public.streamversion
+DROP TABLE public.streamversion;
 
 CREATE TABLE IF NOT EXISTS public.streamversion (
 	streamid varchar NOT NULL,
@@ -292,9 +292,9 @@ CREATE TABLE IF NOT EXISTS public.streamversion (
 	CONSTRAINT streamversion_pkey PRIMARY KEY (streamid)
 );
 
--- Drop table
+-- tension
 
--- DROP TABLE public.tension
+DROP TABLE public.tension;
 
 CREATE TABLE IF NOT EXISTS public.tension (
 	id uuid NOT NULL,
@@ -308,9 +308,9 @@ CREATE TABLE IF NOT EXISTS public.tension (
 );
 CREATE UNIQUE INDEX tension_tl ON public.tension USING btree (id, start_tl, end_tl DESC);
 
--- Drop table
+-- timeline
 
--- DROP TABLE public.timeline
+DROP TABLE public.timeline;
 
 CREATE TABLE IF NOT EXISTS public.timeline (
 	"timestamp" timestamptz NOT NULL,
@@ -322,4 +322,3 @@ CREATE TABLE IF NOT EXISTS public.timeline (
 CREATE INDEX timeline_aggregateid ON public.timeline USING btree (aggregateid);
 CREATE INDEX timeline_aggregatetype ON public.timeline USING btree (aggregatetype);
 CREATE INDEX timeline_ts ON public.timeline USING btree ("timestamp");
-
