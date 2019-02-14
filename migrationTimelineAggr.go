@@ -27,6 +27,11 @@ import (
 
 func Timeline(dbsorint, dbsircles *sql.DB) {
 	var s string
+	var cont int
+	var n int
+
+	cont = 1
+
 	fmt.Println("MIGRATION OF TABLE TIMELINE AND AGGREGATEVERSION")
 
 	rows, err := dbsorint.Query("SELECT timestamp, aggregatetype, eventtype, aggregateid, data  FROM event")
@@ -39,7 +44,7 @@ func Timeline(dbsorint, dbsircles *sql.DB) {
 
 	var timestamp string
 	var aggregatetype string
-	var aggregateid []byte
+	var aggregateid string
 	var eventtype string
 	var data []byte
 
@@ -89,7 +94,12 @@ func Timeline(dbsorint, dbsircles *sql.DB) {
 		}
 
 		// count value to insert
-		n := rowsCounts * numFields
+		if rowsCounts == 0{
+			n = 0
+		}else{
+			n = rowsCounts * numFields
+		}
+		
 		rowsCounts++
 
 		// values insert
@@ -101,16 +111,37 @@ func Timeline(dbsorint, dbsircles *sql.DB) {
 		query = query[:len(query)-1] + `),`
 
 		// append values to query
-		values = append(values, timestamp, groupid, aggregatetype, string(aggregateid))
+		values = append(values, timestamp, groupid, aggregatetype, aggregateid)
+		
+		//max number of values in postgresql can be 65535. the argument goes 4 in 4 
+		valore := 65532*cont
 
-	}
-	// remove last ','
-	query = query[:len(query)-1]
-	// execute query
-	_, err = dbsircles.Exec(query, values...)
-	if err != nil {
-		log.Println("Query error")
-		log.Println(err)
+		if len(values) == valore || (cont == 4 && len(values) == 252200){
+			// remove last ','
+			query = query[:len(query)-1]
+			// execute query
+			inizio := 65532*(cont-1)
+			if cont !=4{
+				_, err := dbsircles.Exec(query, values[inizio:valore]...)
+				if err != nil {
+					log.Println("Query error")
+					log.Println(err)
+				}
+			}else{
+				_, err := dbsircles.Exec(query, values[inizio:252200]...)
+				if err != nil {
+					log.Println("Query error")
+					log.Println(err)
+				}
+			}
+		
+			cont++
+			query = ""
+			query = `INSERT INTO timeline (timestamp, groupid, aggregatetype, aggregateid) VALUES `
+			rowsCounts = 0
+			
+		}
+
 	}
 	fmt.Println("MIGRATION OF TABLE TIMELINE AND AGGREGATEVERSION DONE")
 }

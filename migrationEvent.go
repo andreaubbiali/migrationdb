@@ -17,6 +17,11 @@ type metadata struct {
 func Event(dbsorint, dbsircles *sql.DB) {
 	var meta metadata
 	var s string
+	var cont int
+	var n int
+
+	cont = 1
+
 	fmt.Println("MIGRATION OF TABLE EVENT")
 
 	rows, err := dbsorint.Query("SELECT id, sequencenumber, eventtype, aggregatetype, aggregateid, timestamp, version, correlationid, causationid, data FROM event")
@@ -50,13 +55,12 @@ func Event(dbsorint, dbsircles *sql.DB) {
 		// time := fmt.Sprintf(stringa[:10] + " " + stringa[11:29])
 		str := fmt.Sprintf(`SELECT groupid FROM timeline WHERE timestamp = '%v'`, timestamp)
 		sqlStatement := str
-		if err != nil {
-			fmt.Println("c", err)
-		}
 		row := dbsircles.QueryRow(sqlStatement)
 		err := row.Scan(&meta.GroupID)
 		if err != nil {
-			fmt.Println(aggregatetype, eventtype)
+			fmt.Println(timestamp)
+			fmt.Println(err)
+			//fmt.Println(aggregatetype, eventtype)
 		}
 
 		if aggregatetype == "timeline" {
@@ -102,7 +106,11 @@ func Event(dbsorint, dbsircles *sql.DB) {
 		marshalmetadata, _ := json.Marshal(groupMetadata)
 
 		// count value to insert
-		n := rowsCounts * numFields
+		if rowsCounts == 0{
+			n = 0
+		}else{
+			n = rowsCounts * numFields
+		}
 		rowsCounts++
 
 		// values insert
@@ -115,14 +123,43 @@ func Event(dbsorint, dbsircles *sql.DB) {
 
 		// append values to query
 		values = append(values, id, sequencenumber, eventtype, aggregatetype, aggregateid, timestamp, version, data, marshalmetadata)
+
+		//max number of values in postgresql can be 65535. the argument goes 4 in 4 
+		valore := 65532*cont
+
+		if len(values) == valore || (cont == 8 && len(values) == 567450){
+			// remove last ','
+			query = query[:len(query)-1]
+			// execute query
+			inizio := 65532*(cont-1)
+			if cont !=8{
+				_, err := dbsircles.Exec(query, values[inizio:valore]...)
+				if err != nil {
+					log.Println("Query error")
+					log.Println(err)
+				}
+			}else{
+				_, err := dbsircles.Exec(query, values[inizio:567450]...)
+				if err != nil {
+					log.Println("Query error")
+					log.Println(err)
+				}
+			}
+		
+			cont++
+			query = ""
+			query = `INSERT INTO event (id, sequencenumber, eventtype, category, streamid, timestamp, version, data, metadata) values`
+			rowsCounts = 0
+			
+		}
 	}
-	// remove last ','
-	query = query[:len(query)-1]
-	// execute query
-	_, err = dbsircles.Exec(query, values...)
-	if err != nil {
-		log.Println("Query error")
-		log.Println(err)
-	}
+	// // remove last ','
+	// query = query[:len(query)-1]
+	// // execute query
+	// _, err = dbsircles.Exec(query, values...)
+	// if err != nil {
+	// 	log.Println("Query error")
+	// 	log.Println(err)
+	// }
 	fmt.Println("MIGRATION OF TABLE EVENT DONE")
 }
