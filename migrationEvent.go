@@ -21,7 +21,7 @@ func Event(dbsorint, dbsircles *sql.DB) {
 
 	fmt.Println("MIGRATION OF TABLE EVENT")
 
-	rows, err := dbsorint.Query("SELECT id, sequencenumber, eventtype, aggregatetype, aggregateid, timestamp, version, correlationid, causationid, data FROM event")
+	rows, err := dbsorint.Query("SELECT id, sequencenumber, eventtype, aggregatetype, aggregateid, timestamp, version, correlationid, causationid, data FROM event ORDER BY sequencenumber")
 	//rows, err := dbsorint.Query("SELECT id, sequencenumber, eventtype, aggregatetype, aggregateid, timestamp, version, correlationid, causationid, data FROM event WHERE aggregatetype != 'commands' AND aggregatetype != 'timeline'")
 	if err != nil {
 		fmt.Println("a", err)
@@ -37,10 +37,10 @@ func Event(dbsorint, dbsircles *sql.DB) {
 	var version int
 	var data []byte
 
-	query := `INSERT INTO event (id, sequencenumber, eventtype, category, streamid, timestamp, version, data, metadata) values `
+	query := `INSERT INTO event (id, eventtype, category, streamid, timestamp, version, data, metadata) values `
 
 	values := []interface{}{}
-	numFields := 9 // the number of fields you are inserting
+	numFields := 8 // the number of fields you are inserting
 	rowsCounts := 0
 
 	for rows.Next() {
@@ -120,7 +120,7 @@ func Event(dbsorint, dbsircles *sql.DB) {
 		query = query[:len(query)-1] + `),`
 
 		// append values to query
-		values = append(values, id, sequencenumber, eventtype, aggregatetype, aggregateid, timestamp, version, data, marshalmetadata)
+		values = append(values, id, eventtype, aggregatetype, aggregateid, timestamp, version, data, marshalmetadata)
 		// max number of values in postgresql is 65535.
 		if len(values) >= 65535-numFields {
 			// remove last ','
@@ -132,7 +132,7 @@ func Event(dbsorint, dbsircles *sql.DB) {
 				log.Println(err)
 			}
 
-			query = `INSERT INTO event (id, sequencenumber, eventtype, category, streamid, timestamp, version, data, metadata) values `
+			query = `INSERT INTO event (id, eventtype, category, streamid, timestamp, version, data, metadata) values `
 			rowsCounts = 0
 			values = nil
 		}
