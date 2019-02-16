@@ -86,6 +86,8 @@ func main() {
 		timeline[sequencenumber] = timestamp.UnixNano()
 	}
 
+	fmt.Println("----- START MIGRATION -----")
+
 	/* ----- CREATE TABLE ----- */
 
 	fmt.Println("CREATE TABLE")
@@ -132,8 +134,8 @@ func main() {
 
 	//every time I do a query of INSERT INTO i must use also a scan and returning something because without it the code after some loop broke.
 
-	//ACCOUNTABILITY
-	Accountability(dbsorint, dbsircles, timeline)
+	// //ACCOUNTABILITY
+	// Accountability(dbsorint, dbsircles, timeline)
 
 	//DOMAIN
 	Domain(dbsorint, dbsircles, timeline)
@@ -188,6 +190,8 @@ func main() {
 
 	// //TRY
 	// Try(dbsorint, dbsircles)
+
+	fmt.Println("----- END MIGRATION -----")
 
 }
 

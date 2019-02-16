@@ -17,10 +17,7 @@ type metadata struct {
 func Event(dbsorint, dbsircles *sql.DB) {
 	var meta metadata
 	var s string
-	var cont int
 	var n int
-
-	cont = 1
 
 	fmt.Println("MIGRATION OF TABLE EVENT")
 
@@ -40,7 +37,7 @@ func Event(dbsorint, dbsircles *sql.DB) {
 	var version int
 	var data []byte
 
-	query := `INSERT INTO event (id, sequencenumber, eventtype, category, streamid, timestamp, version, data, metadata) values`
+	query := `INSERT INTO event (id, sequencenumber, eventtype, category, streamid, timestamp, version, data, metadata) values `
 
 	values := []interface{}{}
 	numFields := 9 // the number of fields you are inserting
@@ -56,6 +53,7 @@ func Event(dbsorint, dbsircles *sql.DB) {
 		str := fmt.Sprintf(`SELECT groupid FROM timeline WHERE timestamp = '%v'`, timestamp)
 		sqlStatement := str
 		row := dbsircles.QueryRow(sqlStatement)
+
 		err := row.Scan(&meta.GroupID)
 		if err != nil {
 			fmt.Println(timestamp)
@@ -106,9 +104,9 @@ func Event(dbsorint, dbsircles *sql.DB) {
 		marshalmetadata, _ := json.Marshal(groupMetadata)
 
 		// count value to insert
-		if rowsCounts == 0{
+		if rowsCounts == 0 {
 			n = 0
-		}else{
+		} else {
 			n = rowsCounts * numFields
 		}
 		rowsCounts++
@@ -123,43 +121,32 @@ func Event(dbsorint, dbsircles *sql.DB) {
 
 		// append values to query
 		values = append(values, id, sequencenumber, eventtype, aggregatetype, aggregateid, timestamp, version, data, marshalmetadata)
-
-		//max number of values in postgresql can be 65535. the argument goes 4 in 4 
-		valore := 65532*cont
-
-		if len(values) == valore || (cont == 8 && len(values) == 567450){
+		// max number of values in postgresql is 65535.
+		if len(values) >= 65535-numFields {
 			// remove last ','
 			query = query[:len(query)-1]
 			// execute query
-			inizio := 65532*(cont-1)
-			if cont !=8{
-				_, err := dbsircles.Exec(query, values[inizio:valore]...)
-				if err != nil {
-					log.Println("Query error")
-					log.Println(err)
-				}
-			}else{
-				_, err := dbsircles.Exec(query, values[inizio:567450]...)
-				if err != nil {
-					log.Println("Query error")
-					log.Println(err)
-				}
+			_, err = dbsircles.Exec(query, values...)
+			if err != nil {
+				log.Println("Query error")
+				log.Println(err)
 			}
-		
-			cont++
-			query = ""
-			query = `INSERT INTO event (id, sequencenumber, eventtype, category, streamid, timestamp, version, data, metadata) values`
+
+			query = `INSERT INTO event (id, sequencenumber, eventtype, category, streamid, timestamp, version, data, metadata) values `
 			rowsCounts = 0
-			
+			values = nil
 		}
 	}
-	// // remove last ','
-	// query = query[:len(query)-1]
-	// // execute query
-	// _, err = dbsircles.Exec(query, values...)
-	// if err != nil {
-	// 	log.Println("Query error")
-	// 	log.Println(err)
-	// }
+	// check if there are others rows to insert
+	if rowsCounts > 0 {
+		// remove last ','
+		query = query[:len(query)-1]
+		// execute query
+		_, err = dbsircles.Exec(query, values...)
+		if err != nil {
+			log.Println("Query error")
+			log.Println(err)
+		}
+	}
 	fmt.Println("MIGRATION OF TABLE EVENT DONE")
 }

@@ -27,10 +27,7 @@ import (
 
 func Timeline(dbsorint, dbsircles *sql.DB) {
 	var s string
-	var cont int
 	var n int
-
-	cont = 1
 
 	fmt.Println("MIGRATION OF TABLE TIMELINE AND AGGREGATEVERSION")
 
@@ -94,12 +91,12 @@ func Timeline(dbsorint, dbsircles *sql.DB) {
 		}
 
 		// count value to insert
-		if rowsCounts == 0{
+		if rowsCounts == 0 {
 			n = 0
-		}else{
+		} else {
 			n = rowsCounts * numFields
 		}
-		
+
 		rowsCounts++
 
 		// values insert
@@ -112,36 +109,34 @@ func Timeline(dbsorint, dbsircles *sql.DB) {
 
 		// append values to query
 		values = append(values, timestamp, groupid, aggregatetype, aggregateid)
-		
-		//max number of values in postgresql can be 65535. the argument goes 4 in 4 
-		valore := 65532*cont
 
-		if len(values) == valore || (cont == 4 && len(values) == 252200){
+		// max number of values in postgresql is 65535.
+		if len(values) >= 65535-numFields {
 			// remove last ','
 			query = query[:len(query)-1]
 			// execute query
-			inizio := 65532*(cont-1)
-			if cont !=4{
-				_, err := dbsircles.Exec(query, values[inizio:valore]...)
-				if err != nil {
-					log.Println("Query error")
-					log.Println(err)
-				}
-			}else{
-				_, err := dbsircles.Exec(query, values[inizio:252200]...)
-				if err != nil {
-					log.Println("Query error")
-					log.Println(err)
-				}
+			_, err = dbsircles.Exec(query, values...)
+			if err != nil {
+				log.Println("Query error")
+				log.Println(err)
 			}
-		
-			cont++
-			query = ""
+
 			query = `INSERT INTO timeline (timestamp, groupid, aggregatetype, aggregateid) VALUES `
 			rowsCounts = 0
-			
+			values = nil
 		}
 
+	}
+	// check if there are others rows to insert
+	if rowsCounts > 0 {
+		// remove last ','
+		query = query[:len(query)-1]
+		// execute query
+		_, err = dbsircles.Exec(query, values...)
+		if err != nil {
+			log.Println("Query error")
+			log.Println(err)
+		}
 	}
 	fmt.Println("MIGRATION OF TABLE TIMELINE AND AGGREGATEVERSION DONE")
 }
