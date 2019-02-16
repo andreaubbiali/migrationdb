@@ -188,8 +188,8 @@ func main() {
 	//EVENT
 	Event(dbsorint, dbsircles)
 
-	// //TRY
-	// Try(dbsorint, dbsircles)
+	//STREAMVERSION
+	StreamVersion(dbsorint, dbsircles)
 
 	fmt.Println("----- END MIGRATION -----")
 
