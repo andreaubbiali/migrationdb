@@ -32,16 +32,18 @@ func Event(dbsorint, dbsircles *sql.DB) {
 	var sequencenumber int
 	var eventtype string
 	var aggregatetype string
-	var aggregateid []byte
+	var aggregateid string
 	var timestamp string
 	var version int
 	var data []byte
+	var versionCount int
 
 	query := `INSERT INTO event (id, eventtype, category, streamid, timestamp, version, data, metadata) values `
 
 	values := []interface{}{}
 	numFields := 8 // the number of fields you are inserting
 	rowsCounts := 0
+	versionCount = 0
 
 	for rows.Next() {
 		err = rows.Scan(&id, &sequencenumber, &eventtype, &aggregatetype, &aggregateid, &timestamp, &version, &meta.Correlationid, &meta.CausationID, &data)
@@ -92,6 +94,12 @@ func Event(dbsorint, dbsircles *sql.DB) {
 				eventtype = "RoleUpdated"
 			}
 			s = ""
+		}
+
+		if aggregatetype == "rolestree" {
+			aggregateid = "744953eb-ec9f-5f29-9e01-d4ffdd302947"
+			version = versionCount
+			versionCount++
 		}
 
 		groupMetadata := metadata{

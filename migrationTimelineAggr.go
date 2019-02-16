@@ -90,6 +90,10 @@ func Timeline(dbsorint, dbsircles *sql.DB) {
 			aggregatetype = "memberchange"
 		}
 
+		if aggregatetype == "rolestree" {
+			aggregateid = "744953eb-ec9f-5f29-9e01-d4ffdd302947"
+		}
+
 		// count value to insert
 		if rowsCounts == 0 {
 			n = 0
