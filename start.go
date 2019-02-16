@@ -134,8 +134,8 @@ func main() {
 
 	//every time I do a query of INSERT INTO i must use also a scan and returning something because without it the code after some loop broke.
 
-	// //ACCOUNTABILITY
-	// Accountability(dbsorint, dbsircles, timeline)
+	//ACCOUNTABILITY
+	Accountability(dbsorint, dbsircles, timeline)
 
 	//DOMAIN
 	Domain(dbsorint, dbsircles, timeline)
@@ -187,6 +187,9 @@ func main() {
 
 	//EVENT
 	Event(dbsorint, dbsircles)
+
+	//ROLEEVENT TIMELINE
+	RoleEventTimeline(dbsorint, dbsircles)
 
 	//STREAMVERSION
 	StreamVersion(dbsorint, dbsircles)
