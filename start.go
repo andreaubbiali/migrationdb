@@ -1,42 +1,29 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
-	"io"
-	"log"
-	"net/http"
 
 	_ "github.com/lib/pq"
 )
 
-func post(token string, body io.Reader) {
-	const URLSircles = "http://local.com/upload"
-	const ContentType = "application/json"
-
-	// create request
-	req, err := http.NewRequest("POST", URLSircles, body)
-
-	// ----- HEADER -----
-	// add contenttype
-	req.Header.Add("Content-Type", "application/json")
-	// add bearer to token
-	auth := fmt.Sprintf("Bearer %s", token)
-	// add token
-	req.Header.Add("authorization", auth)
-
-	// ----- REQUEST -----
-	// create client
-	client := &http.Client{}
-	// do request
-	resp, err := client.Do(req)
-	if err != nil {
-		log.Println("POST error")
-		log.Println(err)
-	}
-	log.Println(resp)
+type BodyRequest struct {
+	operationName string
+	query         string
+	variables     interface{}
 }
 
 func main() {
 	// strings.NewReader(s)
+	// create connection to db sorint
+	dbsorint, err := sql.Open("postgres", "postgres://postgres:password@localhost/sorint?sslmode=disable")
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer dbsorint.Close()
 
+	token = Auth()
+
+	// member
+	Member(dbsorint, token)
 }
