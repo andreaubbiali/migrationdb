@@ -7,10 +7,11 @@ import (
 	_ "github.com/lib/pq"
 )
 
+// BodyRequest for sircles api
 type BodyRequest struct {
-	operationName string
-	query         string
-	variables     interface{}
+	OperationName string                 `json:"operationName"`
+	Query         string                 `json:"query"`
+	Variables     map[string]interface{} `json:"variables"`
 }
 
 func main() {
@@ -22,7 +23,7 @@ func main() {
 	}
 	defer dbsorint.Close()
 
-	token = Auth()
+	token := Auth()
 
 	// member
 	Member(dbsorint, token)
