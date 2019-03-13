@@ -34,11 +34,12 @@ func Post(token string, body io.Reader) {
 	// create client
 	client := &http.Client{}
 	// do request
-	resp, err := client.Do(req)
+	res, err := client.Do(req)
 	if err != nil {
 		log.Println("POST error")
 		log.Println(err)
-		respParsed, _ := ioutil.ReadAll(resp.Body)
-		log.Println(string(respParsed))
+		resParsed, _ := ioutil.ReadAll(res.Body)
+		log.Println(string(resParsed))
 	}
+	defer res.Body.Close()
 }

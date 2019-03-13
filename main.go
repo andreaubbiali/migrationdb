@@ -56,7 +56,7 @@ func main() {
 		}
 
 		fmt.Println("CREATE TABLE DONE")
-	*/
+
 
 	/* ----- SEND DATA TO API ----- */
 
@@ -65,11 +65,17 @@ func main() {
 	token := Auth()
 
 	// not used, members are imported from Clann db
-	Member(dbsorint, token)
-	// Role(dbsorint, token);
-	// RoleMember(dbsorint, token);
-	// Domain(dbsorint, token);
-	// Accountabilities(dbsorint, token);
+
+	fmt.Println("MEMBER API")
+	//Member(dbsorint, token)
+	fmt.Println("MEMBER API DONE")
+
+	fmt.Println("ROLE API")
+	Role(dbsorint, token)
+	fmt.Println("ROLE API DONE")
+	// RoleMember(dbsorint, token)
+	// Domain(dbsorint, token)
+	// Accountabilities(dbsorint, token)
 
 	fmt.Println("API REQUESTS DONE")
 }
