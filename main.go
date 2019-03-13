@@ -3,8 +3,6 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	"io/ioutil"
-	"strings"
 
 	_ "github.com/lib/pq"
 )
@@ -40,25 +38,29 @@ func main() {
 
 	/* ----- DROP AND CREATE TABLE ----- */
 
-	fmt.Println("CREATE TABLE")
+	/*
+		fmt.Println("CREATE TABLE")
 
-	// read query
-	file, err := ioutil.ReadFile("./tables.sql")
-	if err != nil {
-		fmt.Println("Errors create table")
-	}
+		// read query
+		file, err := ioutil.ReadFile("./tables.sql")
+		if err != nil {
+			fmt.Println("Errors create table")
+		}
 
-	// split query divided by ';'
-	requests := strings.Split(string(file), ";")
+		// split query divided by ';'
+		requests := strings.Split(string(file), ";")
 
-	// execute each query saved in the file
-	for _, request := range requests {
-		dbsircles.Exec(request)
-	}
+		// execute each query saved in the file
+		for _, request := range requests {
+			dbsircles.Exec(request)
+		}
 
-	fmt.Println("CREATE TABLE DONE")
+		fmt.Println("CREATE TABLE DONE")
+	*/
 
 	/* ----- SEND DATA TO API ----- */
+
+	fmt.Println("API REQUESTS")
 
 	token := Auth()
 
@@ -68,4 +70,6 @@ func main() {
 	// RoleMember(dbsorint, token);
 	// Domain(dbsorint, token);
 	// Accountabilities(dbsorint, token);
+
+	fmt.Println("API REQUESTS DONE")
 }
